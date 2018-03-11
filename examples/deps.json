@@ -1,0 +1,8 @@
+{
+	"name"    : "My Deps",
+	"gitid"   : "raub",
+	"desc"    : "Some deps description",
+	"type"    : "deps",
+	"author"  : "Luis Blanco",
+	"email"   : "raubtierxxx@gmail.com"
+}

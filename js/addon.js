@@ -16,6 +16,9 @@ const tmpClassCpp    = require('./templates/class-cpp');
 const tmpClassHpp    = require('./templates/class-hpp');
 
 
+const dirs = ['cpp', 'examples', 'test'];
+
+
 module.exports = async (json, opts) => {
 	
 	const noClasses = (
@@ -49,7 +52,6 @@ module.exports = async (json, opts) => {
 		
 	};
 	
-	const dirs = ['cpp', 'examples', 'test'];
 	
 	for (const nested of dirs) {
 		await mkdir(`${opts.dir}/${nested}`);

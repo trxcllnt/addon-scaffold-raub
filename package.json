@@ -1,26 +1,30 @@
 {
-  "name": "addon-scaffold-raub",
-  "author": "Luis Blanco <raubtierxxx@gmail.com>",
-  "description": "Scaffolding tools for Node.js addons",
-  "version": "0.0.1",
-  "main": "index.js",
-  "keywords": [
-    "node",
-    "addon",
-    "scaffold"
-  ],
-  "maintainers": [
-    {
-      "name": "Luis Blanco",
-      "email": "raubtierxxx@gmail.com",
-      "skype": "rauber666"
-    }
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/raub/node-addon-scaffold.git"
-  },
-  "dependencies": {
-  }
+	"name": "addon-scaffold-raub",
+	"author": "Luis Blanco <raubtierxxx@gmail.com>",
+	"description": "Scaffolding tools for Node.js addons",
+	"version": "0.0.1",
+	"main": "index.js",
+	"keywords": [
+		"node",
+		"addon",
+		"scaffold"
+	],
+	"preferGlobal": true,
+	"bin": {
+		"addon-scaffold": "./index.js"
+	},
+	"maintainers": [
+		{
+			"name": "Luis Blanco",
+			"email": "raubtierxxx@gmail.com",
+			"skype": "rauber666"
+		}
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/raub/node-addon-scaffold.git"
+	},
+	"dependencies": {
+	}
 }
