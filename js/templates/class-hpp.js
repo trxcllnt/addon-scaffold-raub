@@ -32,8 +32,18 @@ protected:
 	
 	static NAN_METHOD(destroy);
 	
+	${opts.methods.map(m => `\
+	static NAN_METHOD(${m.name});
+	`).join('\n')}
+	
+	
 	static NAN_GETTER(isDestroyedGetter);
 	
+	${opts.properties.map(p => `\
+	static NAN_GETTER(${p.name}Getter);
+	static NAN_SETTER(${p.name}Setter);
+	
+	`).join('\n')}
 	
 // Actual destruction-handler
 private:
@@ -51,6 +61,10 @@ private:
 private:
 	
 	bool _isDestroyed;
+	
+	${opts.properties.map(p => `\
+	${p.ctype} _${p.name};
+	`).join('\n')}
 	
 };
 

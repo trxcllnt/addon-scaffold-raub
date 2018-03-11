@@ -18,6 +18,12 @@ using namespace std;
 #define DES_CHECK                                                             \\
 	if (_isDestroyed) return;
 
+#define CACHE_CAS(CACHE, V)                                                   \\
+	if (${opts.inst}->CACHE == V) {                                           \\
+		return;                                                               \\
+	}                                                                         \\
+	${opts.inst}->CACHE = V;
+
 
 Nan::Persistent<v8::Function> ${opts.name}::_constructor;
 
@@ -98,10 +104,42 @@ NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;
 	
 }
 
+${opts.methods.map(m => `\
+
+NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
+	
+	${m.params.map((p, i) => `\
+	REQ__ARG(0, cwdOwn);
+	`).join('\n')}
+	
+	// TODO: do something?
+	
+}
+`).join('\n')}
+
 
 NAN_GETTER(${opts.name}::isDestroyedGetter) { THIS_${opts.upper};
 	
 	RET_VALUE(JS_BOOL(${opts.inst}->_isDestroyed));
 	
 }
+
+${opts.properties.map(p => `\
+
+NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
+	
+	RET_VALUE(JS_${p.mtype}(${opts.inst}->_${p.name}));
+	
+}
+
+NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;
+	
+	CACHE_CAS(_${p.name}, v);
+	
+	// TODO: may be additional actions on change?
+	
+	${ opts.isEmitter ? `${opts.inst}->emit("${p.name}", 1, &value);` : ''}
+	
+}
+`).join('\n')}
 `;
