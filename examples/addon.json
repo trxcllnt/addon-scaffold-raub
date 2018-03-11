@@ -8,17 +8,12 @@
 	"classes" : {
 		"Class1" : {
 			"isEmitter" : true,
-			"static" : {
-				"methods": [],
-				"properties": []
-			},
-			"dynamic" : {
-				"methods": [],
-				"properties": []
-			}
+			"properties" : { "k1": "bool", "k2": "fun", "k3": "uint32" }
 		},
 		"Class2" : {
-			
+			"methods" : {
+				"f1" : { "p1": "int32", "p2": "utf8", "p3": "float", "p4": "obj" }
+			}
 		}
 	}
 }

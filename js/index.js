@@ -15,6 +15,8 @@ const target = process.argv[process.argv.length - 1].replace(/(\.json)?$/, '.jso
 
 const resolved = path.resolve(target).replace(/\\/g, '/');
 
+const types = ['addon', 'deps'];
+
 
 const getJson = file => {
 	
@@ -26,6 +28,8 @@ const getJson = file => {
 		
 		console.error(`File ${target} could not be read.`);
 		console.error(e);
+		
+		return null;
 		
 	}
 	
@@ -40,6 +44,12 @@ const getJson = file => {
 		
 		if ( ! json ) {
 			return;
+		}
+		
+		if (typeof json.type !== 'string' || json.type.length < 1) {
+			throw new Error('Expected field "type" to be a string.');
+		} else if (types.indexOf(json.type) < 0) {
+			throw new Error(`Type "${json.type}" is not supported.`);
 		}
 		
 		if (typeof json.name !== 'string' || json.name.length < 2) {
@@ -71,7 +81,6 @@ const getJson = file => {
 			
 			name,
 			
-			type   : json.type,
 			module : name.replace(/[^a-z0-9]/gi, ''),
 			lower  : name.replace(/[^a-z0-9]/g, '-').replace(/^-+|-+$/g, ''),
 			upper  : name.toUpperCase().replace(/[^A-Z0-9]/g, '_').replace(/^_+|_+$/g, ''),
@@ -79,7 +88,7 @@ const getJson = file => {
 			gitid  : json.gitid,
 			desc   : noDesc ? 'TODO(module description)' : json.desc,
 			author : noAuthor ? 'John Doe' : json.author,
-			email  : noEmail ? '' : json.email,
+			email  : noEmail ? 'todo@todo.todo' : json.email,
 			
 		};
 		
@@ -93,13 +102,7 @@ const getJson = file => {
 		await write(`${opts.dir}/.npmignore`, tmpNpmignore(opts));
 		
 		
-		if (opts.type === 'addon') {
-			await require('./addon')(json, opts);
-		} else if (opts.type === 'deps') {
-			await require('./deps')(json, opts);
-		} else {
-			console.log(`Type "${opts.type}" is not supported.`);
-		}
+		await require(`./${json.type}`)(json, opts);
 		
 	} catch (e) {
 		console.error(e);
