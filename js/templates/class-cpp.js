@@ -1,0 +1,107 @@
+module.exports = opts => `\
+#include <cstdlib>
+#include <iostream>
+
+#include "${opts.lower}.hpp"
+
+using namespace v8;
+using namespace node;
+using namespace std;
+
+
+#define THIS_${opts.upper}                                                    \\
+	${opts.name} *${opts.inst} = ObjectWrap::Unwrap<${opts.name}>(info.This());
+
+#define THIS_CHECK                                                            \\
+	if (${opts.inst}->_isDestroyed) return;
+
+#define DES_CHECK                                                             \\
+	if (_isDestroyed) return;
+
+
+Nan::Persistent<v8::Function> ${opts.name}::_constructor;
+
+
+void ${opts.name}::init(Local<Object> target) {
+	
+	Local<FunctionTemplate> proto = Nan::New<FunctionTemplate>(newCtor);
+	
+	proto->InstanceTemplate()->SetInternalFieldCount(1);
+	proto->SetClassName(JS_STR("${opts.name}"));
+	
+	
+	// Accessors
+	Local<ObjectTemplate> obj = proto->PrototypeTemplate();
+	ACCESSOR_R(obj, isDestroyed);
+	
+	
+	// -------- dynamic
+	
+	${ opts.isEmitter ? 'extendPrototype(proto);' : '' }
+	
+	Nan::SetPrototypeMethod(proto, "destroy", destroy);
+	
+	
+	// -------- static
+	
+	Local<Function> ctor = Nan::GetFunction(proto).ToLocalChecked();
+	
+	${ opts.isEmitter ? 'extendConstructor(ctor);' : '' }
+	
+	
+	_constructor.Reset(ctor);
+	Nan::Set(target, JS_STR("${opts.name}"), ctor);
+	
+	
+}
+
+
+NAN_METHOD(${opts.name}::newCtor) {
+	
+	CTOR_CHECK("${opts.name}");
+	
+	${opts.name} *${opts.inst} = new ${opts.name}();
+	${opts.inst}->Wrap(info.This());
+	
+	RET_VALUE(info.This());
+	
+}
+
+
+${opts.name}::${opts.name}() {
+	
+	_isDestroyed = false;
+	
+}
+
+
+${opts.name}::~${opts.name}() {
+	
+	_destroy();
+	
+}
+
+
+void ${opts.name}::_destroy() { DES_CHECK;
+	
+	_isDestroyed = true;
+	
+	${ opts.isEmitter ? `emit("destroy");` : ''}
+	
+}
+
+
+
+NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;
+	
+	${opts.inst}->_destroy();
+	
+}
+
+
+NAN_GETTER(${opts.name}::isDestroyedGetter) { THIS_${opts.upper};
+	
+	RET_VALUE(JS_BOOL(${opts.inst}->_isDestroyed));
+	
+}
+`;

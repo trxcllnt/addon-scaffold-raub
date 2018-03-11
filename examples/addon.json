@@ -1,0 +1,24 @@
+{
+	"name"    : "My Addon",
+	"gitid"   : "raub",
+	"desc"    : "Some addon description",
+	"type"    : "addon",
+	"author"  : "Luis Blanco",
+	"email"   : "raubtierxxx@gmail.com",
+	"classes" : {
+		"Class1" : {
+			"isEmitter" : true,
+			"static" : {
+				"methods": [],
+				"properties": []
+			},
+			"dynamic" : {
+				"methods": [],
+				"properties": []
+			}
+		},
+		"Class2" : {
+			
+		}
+	}
+}
