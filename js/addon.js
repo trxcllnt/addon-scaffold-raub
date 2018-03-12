@@ -18,6 +18,40 @@ const tmpClassHpp    = require('./templates/class-hpp');
 
 const dirs = ['cpp', 'examples', 'test'];
 
+const toPersistent = (inst, name) => `if (Nan::New(${inst}->_${name}) == v) {
+		return;
+	}
+	${inst}->_${name}.Reset(v);\
+`;
+
+const types = {
+	utf8   : { ctype: 'std::string' },
+	int32  : { ctype: 'int' },
+	bool   : { ctype: 'bool' },
+	uint32 : { ctype: 'unsigned int' },
+	offs   : { ctype: 'size_t' },
+	double : { ctype: 'double' },
+	float  : { ctype: 'float' },
+	ext    : { ctype: 'void *' },
+	fun    : {
+		ctype: 'Nan::Persistent<v8::Function>',
+		toV8: toPersistent,
+	},
+	obj : {
+		ctype: 'Nan::Persistent<v8::Object>',
+		toV8: toPersistent,
+	},
+	arrv : {
+		ctype: 'Nan::Persistent<v8::Object>',
+		toV8: toPersistent,
+	},
+};
+
+const getType = (ltype) => (types[ltype] || {
+	ctype: 'int',
+	toV8: (name) => `_${name} = v;`,
+});
+
 
 module.exports = async (json, opts) => {
 	
@@ -45,7 +79,59 @@ module.exports = async (json, opts) => {
 				const upper     = lower.replace(/-/g, '_').toUpperCase();
 				const isEmitter = value.isEmitter === true;
 				
-				return { name, inst, lower, upper, isEmitter };
+				const noMethods = (
+					typeof value.methods !== 'object' ||
+					value.methods === null ||
+					Object.keys(value.methods).length === 0
+				);
+				
+				const methods = noMethods ? [] : Object.entries(value.methods).map(
+					([name, params]) => {
+						
+						const noParams = (
+							typeof params !== 'object' ||
+							params === null ||
+							Object.keys(params).length === 0
+						);
+						
+						return {
+							name,
+							params : noParams ? [] : Object.entries(params).map(
+								([name, ltype]) => {
+									const type = getType(ltype);
+									return {
+										name,
+										mtype : ltype.toUpperCase(),
+										ctype : type.ctype,
+										toV8  : type.toV8,
+									};
+								}
+							),
+						};
+					}
+				);
+				
+				
+				const noProperties = (
+					typeof value.properties !== 'object' ||
+					value.properties === null ||
+					Object.keys(value.properties).length === 0
+				);
+				
+				const properties = noProperties ? [] : Object.entries(value.properties).map(
+					([name, ltype]) => {
+						const type = getType(ltype);
+						return {
+							name,
+							mtype : ltype.toUpperCase(),
+							ctype : type.ctype,
+							toV8  : type.toV8,
+						};
+					}
+				);
+				
+				
+				return { name, inst, lower, upper, isEmitter, methods, properties };
 				
 			}
 		),

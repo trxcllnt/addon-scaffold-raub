@@ -8,11 +8,16 @@
 	"classes" : {
 		"Class1" : {
 			"isEmitter" : true,
-			"properties" : { "k1": "bool", "k2": "fun", "k3": "uint32" }
+			"properties" : {
+				"prop1": "bool",
+				"prop2": "fun",
+				"prop3": "uint32"
+			}
 		},
 		"Class2" : {
 			"methods" : {
-				"f1" : { "p1": "int32", "p2": "utf8", "p3": "float", "p4": "obj" }
+				"f1" : { "p1": "int32", "p2": "utf8" },
+				"f2" : { "p1": "float", "p2": "obj" }
 			}
 		}
 	}

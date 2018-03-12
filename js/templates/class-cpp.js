@@ -108,9 +108,7 @@ ${opts.methods.map(m => `\
 
 NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
 	
-	${m.params.map((p, i) => `\
-	REQ__ARG(0, cwdOwn);
-	`).join('\n')}
+	${m.params.map((p, i) => `REQ_${p.mtype}_ARG(${i}, ${p.name});`).join('\n\t')}
 	
 	// TODO: do something?
 	
@@ -134,7 +132,7 @@ NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
 
 NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;
 	
-	CACHE_CAS(_${p.name}, v);
+	${ p.toV8 ? p.toV8(opts.inst, p.name) : `CACHE_CAS(_${p.name}, v);` }
 	
 	// TODO: may be additional actions on change?
 	
