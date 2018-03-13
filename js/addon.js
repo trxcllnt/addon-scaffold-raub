@@ -32,28 +32,48 @@ const toStringV8 = (inst, name) => `if (${inst}->_${name} == *v) {
 
 const types = {
 	
-	int32  : { ctype: 'int' },
-	bool   : { ctype: 'bool' },
-	uint32 : { ctype: 'unsigned int' },
-	offs   : { ctype: 'size_t' },
-	double : { ctype: 'double' },
-	float  : { ctype: 'float' },
-	ext    : { ctype: 'void *' },
+	int32  : {
+		ctype: 'int',
+		jtype: 'number',
+	},
+	bool   : {
+		ctype: 'bool',
+		jtype: 'boolean',
+	},
+	uint32 : {
+		ctype: 'unsigned int',
+		jtype: 'number',
+	},
+	offs   : {
+		ctype: 'size_t',
+		jtype: 'number',
+	},
+	double : {
+		ctype: 'double',
+		jtype: 'number',
+	},
+	float  : {
+		ctype: 'float',
+		jtype: 'number',
+	},
+	ext    : {
+		ctype: 'void *',
+		jtype: 'object',
+	},
 	
 	utf8 : {
 		ctype: 'std::string',
+		jtype: 'string',
 		toV8: toStringV8,
 	},
 	fun : {
 		ctype: 'Nan::Persistent<v8::Function>',
+		jtype: 'function',
 		toV8: toPersistentV8,
 	},
 	obj : {
 		ctype: 'Nan::Persistent<v8::Object>',
-		toV8: toPersistentV8,
-	},
-	arrv : {
-		ctype: 'Nan::Persistent<v8::Object>',
+		jtype: 'object',
 		toV8: toPersistentV8,
 	},
 	
@@ -115,10 +135,10 @@ module.exports = async (json, opts) => {
 								([name, ltype]) => {
 									const type = getType(ltype);
 									return {
+										...type,
 										name,
+										ltype,
 										mtype : ltype.toUpperCase(),
-										ctype : type.ctype,
-										toV8  : type.toV8,
 									};
 								}
 							),
@@ -137,10 +157,10 @@ module.exports = async (json, opts) => {
 					([name, ltype]) => {
 						const type = getType(ltype);
 						return {
+							...type,
 							name,
+							ltype,
 							mtype : ltype.toUpperCase(),
-							ctype : type.ctype,
-							toV8  : type.toV8,
 						};
 					}
 				);

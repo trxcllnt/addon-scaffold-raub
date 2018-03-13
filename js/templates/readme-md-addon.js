@@ -39,15 +39,21 @@ Constructor:
 
 
 Properties:
-* \`get bool isDestroyed false\` - see if \`destroy()\` was called on this instance.
+* \`get bool isDestroyed\` - if \`destroy()\` was called on this instance.
+${c.properties.map(p => `* \`get/set ${p.jtype} ${p.name}\` - TODO(description).`).join('\n')}
 
 
 Methods:
 * \`void destroy()\` - destroys the instance${c.isEmitter ? ', `\'destroy\'` event is emitted' : ''}.
+${c.methods.map(m => `* \`void ${m.name}(${m.params.map(p => `${p.jtype} ${m.name}`).join(', ')})\` - TODO(description).`).join('\n')}
 
 
+${c.isEmitter ? `\
 Events:
-* \`'destroy'\` - emitted when the scene is destroyed.
-
+* \`'destroy' <>\` - emitted when the instance was destroyed.
+${c.properties.map(p => `* \`'${p.name}' <${p.jtype}>\` - emitted when the property was changed.`).join('\n')}
+` : ''
+}\
+\
 `).join('\n')}
 `;
