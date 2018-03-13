@@ -163,7 +163,7 @@ module.exports = async (json, opts) => {
 		
 		[`${opts.dir}/binding.gyp`]  : tmpBindingGyp,
 		[`${opts.dir}/package.json`] : tmpPackageJson,
-		[`${opts.dir}/readme.md`]    : tmpReadmeMd,
+		[`${opts.dir}/README.md`]    : tmpReadmeMd,
 		[`${opts.dir}/index.js`]     : tmpIndexJs,
 		[`${opts.dir}/core.js`]      : tmpCoreJs,
 		
