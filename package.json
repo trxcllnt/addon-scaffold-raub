@@ -2,7 +2,7 @@
 	"name": "addon-scaffold-raub",
 	"author": "Luis Blanco <raubtierxxx@gmail.com>",
 	"description": "Scaffolding tools for Node.js addons",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"main": "./js/index.js",
 	"keywords": [
 		"node",

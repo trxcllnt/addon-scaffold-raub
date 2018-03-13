@@ -135,9 +135,7 @@ NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETT
 	${ p.toV8 ? p.toV8(opts.inst, p.name) : `CACHE_CAS(_${p.name}, v);` }
 	
 	// TODO: may be additional actions on change?
-	
-	${ opts.isEmitter ? `${opts.inst}->emit("${p.name}", 1, &value);` : ''}
-	
+	${ opts.isEmitter ? `\n\t${opts.inst}->emit("${p.name}", 1, &value);\n\t` : ''}
 }
 `).join('\n')}
 `;

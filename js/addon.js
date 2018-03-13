@@ -18,14 +18,20 @@ const tmpClassHpp    = require('./templates/class-hpp');
 
 const dirs = ['cpp', 'examples', 'test'];
 
-const toPersistent = (inst, name) => `if (Nan::New(${inst}->_${name}) == v) {
+const toPersistentV8 = (inst, name) => `if (Nan::New(${inst}->_${name}) == v) {
 		return;
 	}
 	${inst}->_${name}.Reset(v);\
 `;
 
+const toStringV8 = (inst, name) => `if (${inst}->_${name} == *v) {
+		return;
+	}
+	${inst}->_${name} = *v;\
+`;
+
 const types = {
-	utf8   : { ctype: 'std::string' },
+	
 	int32  : { ctype: 'int' },
 	bool   : { ctype: 'bool' },
 	uint32 : { ctype: 'unsigned int' },
@@ -33,24 +39,27 @@ const types = {
 	double : { ctype: 'double' },
 	float  : { ctype: 'float' },
 	ext    : { ctype: 'void *' },
-	fun    : {
+	
+	utf8 : {
+		ctype: 'std::string',
+		toV8: toStringV8,
+	},
+	fun : {
 		ctype: 'Nan::Persistent<v8::Function>',
-		toV8: toPersistent,
+		toV8: toPersistentV8,
 	},
 	obj : {
 		ctype: 'Nan::Persistent<v8::Object>',
-		toV8: toPersistent,
+		toV8: toPersistentV8,
 	},
 	arrv : {
 		ctype: 'Nan::Persistent<v8::Object>',
-		toV8: toPersistent,
+		toV8: toPersistentV8,
 	},
+	
 };
 
-const getType = (ltype) => (types[ltype] || {
-	ctype: 'int',
-	toV8: (name) => `_${name} = v;`,
-});
+const getType = ltype => (types[ltype] || (() =>{throw new Error(`Unsupported data type: "${ltype}"`);})());
 
 
 module.exports = async (json, opts) => {
@@ -75,7 +84,13 @@ module.exports = async (json, opts) => {
 				const compacted = key.replace(/[^a-z0-9]/gi, '');
 				const name      = compacted.replace(/^./, x => x.toUpperCase());
 				const inst      = name.replace(/^./, x => x.toLowerCase());
-				const lower     = inst.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`);
+				const lower     = name.replace(
+					/[A-Z]+[A-Z]/g, x => `${x[0]}${x.slice(1, -1).toLowerCase()}${x[x.length-1]}`
+				).replace(
+					/^./, x => x.toLowerCase()
+				).replace(
+					/[a-z][A-Z]/g, x => `${x[0].toLowerCase()}-${x[1].toLowerCase()}`
+				);
 				const upper     = lower.replace(/-/g, '_').toUpperCase();
 				const isEmitter = value.isEmitter === true;
 				
