@@ -38,8 +38,8 @@ protected:
 	static NAN_GETTER(isDestroyedGetter);
 	
 	${opts.properties.map(p => `
-	static NAN_GETTER(${p.name}Getter);
-	static NAN_SETTER(${p.name}Setter);
+	static NAN_GETTER(${p.name}Getter);${p.readonly ? '' : `
+	static NAN_SETTER(${p.name}Setter);`}
 	`).join('\n')}
 	
 // Actual destruction-handler

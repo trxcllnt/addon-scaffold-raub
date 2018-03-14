@@ -8,7 +8,7 @@
 	"classes" : {
 		"AnalyserNode" : {
 			"properties" : {
-				"frequencyBinCount" : "uint32",
+				"-frequencyBinCount" : "uint32",
 				"fftSize" : "uint32",
 				"minDecibels" : "double",
 				"maxDecibels" : "double",
@@ -23,10 +23,10 @@
 		},
 		"AudioBuffer" : {
 			"properties" : {
-				"length" : "int32",
-				"duration" : "double",
-				"sampleRate" : "float",
-				"numberOfChannels" : "uint32"
+				"-length" : "int32",
+				"-duration" : "double",
+				"-sampleRate" : "float",
+				"-numberOfChannels" : "uint32"
 			},
 			"methods" : {
 				"getChannelData" : { "channelIndex": "uint32" },
@@ -37,8 +37,8 @@
 		"AudioBufferSourceNode" : {
 			"properties" : {
 				"buffer" : "obj",
-				"playbackRate" : "obj",
-				"detune" : "obj",
+				"-playbackRate" : "obj",
+				"-detune" : "obj",
 				"loop" : "bool",
 				"loopStart" : "double",
 				"loopEnd" : "double"
@@ -49,7 +49,7 @@
 		},
 		"AudioContext" : {
 			"properties" : {
-				"baseLatency" : "double"
+				"-baseLatency" : "double"
 			},
 			"methods" : {
 				"suspend" : {},
@@ -62,20 +62,20 @@
 		},
 		"AudioDestinationNode" : {
 			"properties" : {
-				"maxChannelCount": "uint32"
+				"-maxChannelCount": "uint32"
 			}
 		},
 		"AudioListener" : {
 			"properties" : {
-				"positionX" : "float",
-				"positionY" : "float",
-				"positionZ" : "float",
-				"forwardX" : "float",
-				"forwardY" : "float",
-				"forwardZ" : "float",
-				"upX" : "float",
-				"upY" : "float",
-				"upZ" : "float"
+				"-positionX" : "obj",
+				"-positionY" : "obj",
+				"-positionZ" : "obj",
+				"-forwardX" : "obj",
+				"-forwardY" : "obj",
+				"-forwardZ" : "obj",
+				"-upX" : "obj",
+				"-upY" : "obj",
+				"-upZ" : "obj"
 			},
 			"methods" : {
 				"setPosition" : { "x" : "float", "y" : "float", "z" : "float" },
@@ -84,10 +84,10 @@
 		},
 		"AudioNode" : {
 			"properties" : {
-				"context" : "obj",
-				"numberOfInputs" : "int32",
-				"numberOfOutputs" : "int32",
-				"channelCount" : "int32",
+				"-context" : "obj",
+				"-numberOfInputs" : "uint32",
+				"-numberOfOutputs" : "uint32",
+				"channelCount" : "uint32",
 				"channelCountMode" : "utf8",
 				"channelInterpretation" : "utf8"
 			},
@@ -99,9 +99,9 @@
 		"AudioParam" : {
 			"properties" : {
 				"value" : "float",
-				"defaultValue" : "float",
-				"minValue" : "float",
-				"maxValue" : "float"
+				"-defaultValue" : "float",
+				"-minValue" : "float",
+				"-maxValue" : "float"
 			},
 			"methods" : {
 				"setValueAtTime" : { "value" : "float", "time" : "double" },
@@ -115,9 +115,9 @@
 		},
 		"AudioProcessingEvent" : {
 			"properties" : {
-				"playbackTime" : "double",
-				"inputBuffer" : "obj",
-				"outputBuffer" : "obj"
+				"-playbackTime" : "double",
+				"-inputBuffer" : "obj",
+				"-outputBuffer" : "obj"
 			}
 		},
 		"AudioScheduledSourceNode" : {
@@ -135,11 +135,13 @@
 				"performanceTime" : "double"
 			}
 		},
+		"AudioWorklet" : {
+		},
 		"AudioWorkletGlobalScope" : {
 			"properties" : {
-				"currentFrame" : "offs",
-				"currentTime" : "double",
-				"sampleRate" : "float"
+				"-currentFrame" : "offs",
+				"-currentTime" : "double",
+				"-sampleRate" : "float"
 			},
 			"methods" : {
 				"registerProcessor" : { "name" : "utf8", "processorConstructor" : "fun" }
@@ -147,23 +149,23 @@
 		},
 		"AudioWorkletNode" : {
 			"properties" : {
-				"parameters" : "obj",
-				"port" : "obj",
+				"-parameters" : "obj",
+				"-port" : "obj",
 				"onprocessorerror" : "fun"
 			}
 		},
 		"AudioWorkletProcessor" : {
 			"properties" : {
-				"port" : "obj"
+				"-port" : "obj"
 			}
 		},
 		"BaseAudioContext" : {
 			"properties" : {
-				"destination" : "obj",
-				"currentTime" : "double",
-				"sampleRate" : "float",
-				"listener" : "obj",
-				"state" : "utf8"
+				"-destination" : "obj",
+				"-currentTime" : "double",
+				"-sampleRate" : "float",
+				"-listener" : "obj",
+				"-state" : "utf8"
 			},
 			"methods" : {
 				"createBuffer" : { "numberOfChannels" : "int32" ,  "numberOfFrames" : "int32" ,  "sampleRate" : "float" },
@@ -194,10 +196,10 @@
 		"BiquadFilterNode" : {
 			"properties" : {
 				"type" : "utf8",
-				"frequency" : "obj",
-				"detune" : "obj",
-				"Q" : "obj",
-				"gain" : "obj"
+				"-frequency" : "obj",
+				"-detune" : "obj",
+				"-Q" : "obj",
+				"-gain" : "obj"
 			},
 			"methods" : {
 				"getFrequencyResponse" : { "frequencyHz" : "obj", "magResponse" : "obj", "phaseResponse" : "obj" }
@@ -209,7 +211,7 @@
 		},
 		"ConstantSourceNode" : {
 			"properties" : {
-				"offset" : "obj"
+				"-offset" : "obj"
 			}
 		},
 		"ConvolverNode" : {
@@ -220,22 +222,22 @@
 		},
 		"DelayNode" : {
 			"properties" : {
-				"delayTime" : "obj"
+				"-delayTime" : "obj"
 			}
 		},
 		"DynamicsCompressorNode" : {
 			"properties" : {
-				"threshold" : "obj",
-				"knee" : "obj",
-				"ratio" : "obj",
-				"reduction" : "float",
-				"attack" : "obj",
-				"release" : "obj"
+				"-threshold" : "obj",
+				"-knee" : "obj",
+				"-ratio" : "obj",
+				"-reduction" : "float",
+				"-attack" : "obj",
+				"-release" : "obj"
 			}
 		},
 		"GainNode" : {
 			"properties" : {
-				"gain" : "obj"
+				"-gain" : "obj"
 			}
 		},
 		"IIRFilterNode" : {
@@ -245,28 +247,28 @@
 		},
 		"MediaElementAudioSourceNode" : {
 			"properties" : {
-				"mediaElement" : "obj"
+				"-mediaElement" : "obj"
 			}
 		},
 		"MediaStreamAudioDestinationNode" : {
 			"properties" : {
-				"stream" : "obj"
+				"-stream" : "obj"
 			}
 		},
 		"MediaStreamAudioSourceNode" : {
 			"properties" : {
-				"mediaStream" : "obj"
+				"-mediaStream" : "obj"
 			}
 		},
 		"OfflineAudioCompletionEvent" : {
 			"properties" : {
-				"renderedBuffer" : "obj"
+				"-renderedBuffer" : "obj"
 			}
 		},
 		"OfflineAudioContext" : {
 			"properties" : {
 				"oncomplete" : "fun",
-				"length" : "int32"
+				"-length" : "uint32"
 			},
 			"methods" : {
 				"startRendering" : {},
@@ -276,8 +278,8 @@
 		"OscillatorNode" : {
 			"properties" : {
 				"type" : "utf8",
-				"frequency" : "obj",
-				"detune" : "obj"
+				"-frequency" : "obj",
+				"-detune" : "obj"
 			},
 			"methods" : {
 				"setPeriodicWave" : { "periodicWave" : "obj" }
@@ -286,12 +288,12 @@
 		"PannerNode" : {
 			"properties" : {
 				"panningModel" : "utf8",
-				"positionX" : "obj",
-				"positionY" : "obj",
-				"positionZ" : "obj",
-				"orientationX" : "obj",
-				"orientationY" : "obj",
-				"orientationZ" : "obj",
+				"-positionX" : "obj",
+				"-positionY" : "obj",
+				"-positionZ" : "obj",
+				"-orientationX" : "obj",
+				"-orientationY" : "obj",
+				"-orientationZ" : "obj",
 				"distanceModel" : "utf8",
 				"refDistance" : "double",
 				"maxDistance" : "double",
@@ -310,12 +312,12 @@
 		"ScriptProcessorNode" : {
 			"properties" : {
 				"onaudioprocess" : "fun",
-				"bufferSize" : "int32"
+				"-bufferSize" : "int32"
 			}
 		},
 		"StereoPannerNode" : {
 			"properties" : {
-				"pan" : "obj"
+				"-pan" : "obj"
 			}
 		},
 		"WaveShaperNode" : {

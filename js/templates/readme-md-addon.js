@@ -40,12 +40,12 @@ Constructor:
 
 Properties:
 * \`get bool isDestroyed\` - if \`destroy()\` was called on this instance.
-${c.properties.map(p => `* \`get/set ${p.jtype} ${p.name}\` - TODO(description).`).join('\n')}
+${c.properties.map(p => `* \`get${p.readonly? '' : '/set'} ${p.jtype} ${p.name}\` - TODO(description).`).join('\n')}
 
 
 Methods:
 * \`void destroy()\` - destroys the instance${c.isEmitter ? ', `\'destroy\'` event is emitted' : ''}.
-${c.methods.map(m => `* \`void ${m.name}(${m.params.map(p => `${p.jtype} ${m.name}`).join(', ')})\` - TODO(description).`).join('\n')}
+${c.methods.map(m => `* \`void ${m.name}(${m.params.map(p => `${p.jtype} ${p.name}`).join(', ')})\` - TODO(description).`).join('\n')}
 
 
 ${c.isEmitter ? `\

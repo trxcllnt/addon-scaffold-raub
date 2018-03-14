@@ -3,6 +3,8 @@
 const mkdir = require('./mkdir');
 const write = require('./write');
 
+const getType = require('./get-type');
+
 // Addon root files
 const tmpBindingGyp  = require('./templates/binding-gyp-addon');
 const tmpPackageJson = require('./templates/package-json-addon');
@@ -18,80 +20,19 @@ const tmpClassHpp    = require('./templates/class-hpp');
 
 const dirs = ['cpp', 'examples', 'test'];
 
-const toPersistentV8 = (inst, name) => `if (Nan::New(${inst}->_${name}) == v) {
-		return;
-	}
-	${inst}->_${name}.Reset(v);\
-`;
-
-const toStringV8 = (inst, name) => `if (${inst}->_${name} == *v) {
-		return;
-	}
-	${inst}->_${name} = *v;\
-`;
-
-const types = {
-	
-	int32  : {
-		ctype: 'int',
-		jtype: 'number',
-	},
-	bool   : {
-		ctype: 'bool',
-		jtype: 'boolean',
-	},
-	uint32 : {
-		ctype: 'unsigned int',
-		jtype: 'number',
-	},
-	offs   : {
-		ctype: 'size_t',
-		jtype: 'number',
-	},
-	double : {
-		ctype: 'double',
-		jtype: 'number',
-	},
-	float  : {
-		ctype: 'float',
-		jtype: 'number',
-	},
-	ext    : {
-		ctype: 'void *',
-		jtype: 'object',
-	},
-	
-	utf8 : {
-		ctype: 'std::string',
-		jtype: 'string',
-		toV8: toStringV8,
-	},
-	fun : {
-		ctype: 'Nan::Persistent<v8::Function>',
-		jtype: 'function',
-		toV8: toPersistentV8,
-	},
-	obj : {
-		ctype: 'Nan::Persistent<v8::Object>',
-		jtype: 'object',
-		toV8: toPersistentV8,
-	},
-	
-};
-
-const getType = ltype => (types[ltype] || (() =>{throw new Error(`Unsupported data type: "${ltype}"`);})());
+const checkObjectKey = (obj, key) => (
+	typeof obj[key] !== 'object' ||
+	obj[key] === null ||
+	Object.keys(obj[key]).length === 0
+);
 
 
 module.exports = async (json, opts) => {
 	
-	const noClasses = (
-		typeof json.classes !== 'object' ||
-		json.classes === null ||
-		Object.keys(json.classes).length === 0
-	);
+	const noClasses = checkObjectKey(json, 'classes');
 	
 	if (noClasses) {
-		console.log('Field "classes" empty. None will be generated.');
+		console.log('Field "classes" is empty. None will be generated.');
 	}
 	
 	opts = {
@@ -101,67 +42,64 @@ module.exports = async (json, opts) => {
 		classList : noClasses ? [] : Object.entries(json.classes).map(
 			([key, value]) => {
 				
+				// Remove any non-letters
 				const compacted = key.replace(/[^a-z0-9]/gi, '');
-				const name      = compacted.replace(/^./, x => x.toUpperCase());
-				const inst      = name.replace(/^./, x => x.toLowerCase());
-				const lower     = name.replace(
+				
+				// Check if starts with a letter or not
+				if (/^[^a-z]/i.test(compacted)) {
+					throw new Error(`Class name must start with a letter. Got "${key}" instead.`);
+				}
+				
+				// First letter: class name - upper, instance name - lower
+				const name = compacted.replace(/^./, x => x.toUpperCase());
+				const inst = name.replace(/^./, x => x.toLowerCase());
+				
+				// lower-case-notation-for-file-names
+				const lower = name.replace(
 					/[A-Z]+[A-Z]/g, x => `${x[0]}${x.slice(1, -1).toLowerCase()}${x[x.length-1]}`
 				).replace(
 					/^./, x => x.toLowerCase()
 				).replace(
 					/[a-z][A-Z]/g, x => `${x[0].toLowerCase()}-${x[1].toLowerCase()}`
 				);
-				const upper     = lower.replace(/-/g, '_').toUpperCase();
+				
+				// UPPER_CASE_NOTATION_FOR_MACROS 
+				const upper = lower.replace(/-/g, '_').toUpperCase();
+				
+				// Normalize boolean
 				const isEmitter = value.isEmitter === true;
 				
-				const noMethods = (
-					typeof value.methods !== 'object' ||
-					value.methods === null ||
-					Object.keys(value.methods).length === 0
-				);
+				
+				// -------- Methods
+				
+				const noMethods = checkObjectKey(value, 'methods');
 				
 				const methods = noMethods ? [] : Object.entries(value.methods).map(
-					([name, params]) => {
+					(pair) => {
 						
-						const noParams = (
-							typeof params !== 'object' ||
-							params === null ||
-							Object.keys(params).length === 0
-						);
+						const [name, params] = pair;
+						const noParams = checkObjectKey(pair, 1);
 						
 						return {
 							name,
 							params : noParams ? [] : Object.entries(params).map(
-								([name, ltype]) => {
-									const type = getType(ltype);
-									return {
-										...type,
-										name,
-										ltype,
-										mtype : ltype.toUpperCase(),
-									};
-								}
+								([name, ltype]) => ({ ...getType(ltype), name })
 							),
 						};
+						
 					}
 				);
 				
 				
-				const noProperties = (
-					typeof value.properties !== 'object' ||
-					value.properties === null ||
-					Object.keys(value.properties).length === 0
-				);
+				// -------- Properties
+				
+				const noProperties = checkObjectKey(value, 'properties');
 				
 				const properties = noProperties ? [] : Object.entries(value.properties).map(
-					([name, ltype]) => {
-						const type = getType(ltype);
-						return {
-							...type,
-							name,
-							ltype,
-							mtype : ltype.toUpperCase(),
-						};
+					([qualifiedName, ltype]) => {
+						const readonly = qualifiedName.indexOf('-') === 0;
+						const name = qualifiedName.replace(/[^a-z0-9]/gi, '');
+						return { ...getType(ltype), name, readonly };
 					}
 				);
 				
@@ -193,17 +131,18 @@ module.exports = async (json, opts) => {
 		
 	};
 	
+	
+	// Write all non-repeating files
 	await Promise.all(Object.entries(templates).map(
 		([file, tpl]) => write(file, tpl(opts)))
 	);
 	
-	
+	// Write C++ classes
 	await Promise.all(opts.classList.map(
 		c => Promise.all([
 			write(`${opts.dir}/cpp/${c.lower}.cpp`, tmpClassCpp(c)),
 			write(`${opts.dir}/cpp/${c.lower}.hpp`, tmpClassHpp(c)),
 		])
 	));
-	
 	
 };

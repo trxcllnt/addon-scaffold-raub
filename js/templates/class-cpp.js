@@ -40,6 +40,7 @@ void ${opts.name}::init(Local<Object> target) {
 	Local<ObjectTemplate> obj = proto->PrototypeTemplate();
 	ACCESSOR_R(obj, isDestroyed);
 	
+	${opts.properties.map(p => `ACCESSOR_R${p.readonly ? '' : 'W'}(obj, ${p.name});`).join('\n\t')}
 	
 	// -------- dynamic
 	
@@ -47,6 +48,7 @@ void ${opts.name}::init(Local<Object> target) {
 	
 	Nan::SetPrototypeMethod(proto, "destroy", destroy);
 	
+	${opts.methods.map(m => `Nan::SetPrototypeMethod(proto, "${m.name}", ${m.name});`).join('\n\t')}
 	
 	// -------- static
 	
@@ -129,13 +131,13 @@ NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
 	RET_VALUE(JS_${p.mtype}(${opts.inst}->_${p.name}));
 	
 }
-
+${p.readonly ? '' : `
 NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;
 	
 	${ p.toV8 ? p.toV8(opts.inst, p.name) : `CACHE_CAS(_${p.name}, v);` }
 	
 	// TODO: may be additional actions on change?
 	${ opts.isEmitter ? `\n\t${opts.inst}->emit("${p.name}", 1, &value);\n\t` : ''}
-}
+}`}
 `).join('\n')}
 `;
