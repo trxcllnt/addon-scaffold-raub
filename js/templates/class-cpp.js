@@ -19,6 +19,11 @@ using namespace std;
 #define THIS_${opts.upper}                                                    \\
 	${opts.name} *${opts.inst} = ObjectWrap::Unwrap<${opts.name}>(info.This());
 
+${ opts.inherits ? `\
+#define THIS_${opts.inherits.upper}                                                    \\
+	${opts.inherits.name} *${opts.inherits.inst} = ObjectWrap::Unwrap<${opts.inherits.name}>(info.This());` : ''
+}
+
 #define THIS_CHECK                                                            \\
 	if (${opts.inst}->_isDestroyed) return;
 
@@ -36,7 +41,7 @@ using namespace std;
 
 ${opts.methods.map(m => `\
 
-NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
+NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
 	
 	${m.params.map((p, i) => `REQ_${p.mtype}_ARG(${i}, ${p.name});`).join('\n\t')}
 	
@@ -47,13 +52,13 @@ NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
 
 ${opts.properties.map(p => `\
 
-NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
+NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
 	
 	RET_VALUE(JS_${p.mtype}(${opts.inst}->_${p.name}));
 	
 }
 ${p.readonly ? '' : `
-NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;
+NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
 	
 	${ p.toV8 ? p.toV8(opts.inst, p.name) : `CACHE_CAS(_${p.name}, v);` }
 	
@@ -108,7 +113,7 @@ void ${opts.name}::init(Local<Object> target) {
 
 
 NAN_METHOD(${opts.name}::newCtor) {
-	${ opts.inherits ? `\n\t// 
+	${ opts.inherits ? `\n\t// Call super()
 	v8::Local<v8::Function> superCtor = Nan::New(${opts.inherits.name}::_constructor);
 	superCtor->Call(info.This(), 0, nullptr);\n\t` : ''
 	}
@@ -129,18 +134,15 @@ ${opts.name}::~${opts.name}() {
 	${ opts.inherits ? '' : `\n\t_destroy();\n\t` }
 }
 
-${ opts.inherits ? '' : `\
 
 void ${opts.name}::_destroy() { DES_CHECK;
 	
 	_isDestroyed = true;
 	
-	${ opts.isEmitter ? `emit("destroy");` : ''}
-	
 }
 
 
-NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;
+NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
 	
 	${opts.inst}->_destroy();
 	
@@ -152,5 +154,4 @@ NAN_GETTER(${opts.name}::isDestroyedGetter) { THIS_${opts.upper};
 	RET_VALUE(JS_BOOL(${opts.inst}->_isDestroyed));
 	
 }
-`}
 `;

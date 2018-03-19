@@ -38,12 +38,11 @@ private:
 	static Nan::Persistent<v8::FunctionTemplate> _protorype; // for inheritance
 	static Nan::Persistent<v8::Function> _constructor;
 	
-	${ opts.inherits ? '' : `\
+	
 	static NAN_METHOD(destroy);
 	static NAN_GETTER(isDestroyedGetter);
 	void _destroy();
-	bool _isDestroyed;`
-	}
+	bool _isDestroyed;
 	
 };
 
