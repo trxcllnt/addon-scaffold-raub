@@ -143,7 +143,7 @@ void ${opts.name}::_destroy() { DES_CHECK;
 
 
 NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
-	
+	${opts.inherits ? `\n\t${opts.inherits.inst}->_destroy();\n\t` : ''}
 	${opts.inst}->_destroy();
 	
 }
