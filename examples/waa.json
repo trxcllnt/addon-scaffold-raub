@@ -7,6 +7,7 @@
 	"email"   : "raubtierxxx@gmail.com",
 	"classes" : {
 		"AnalyserNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-frequencyBinCount" : "uint32",
 				"fftSize" : "uint32",
@@ -35,6 +36,7 @@
 			}
 		},
 		"AudioBufferSourceNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"buffer" : "obj",
 				"-playbackRate" : "obj",
@@ -48,6 +50,7 @@
 			}
 		},
 		"AudioContext" : {
+			"inherits" : "BaseAudioContext",
 			"properties" : {
 				"-baseLatency" : "double"
 			},
@@ -61,6 +64,7 @@
 			}
 		},
 		"AudioDestinationNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-maxChannelCount": "uint32"
 			}
@@ -83,6 +87,7 @@
 			}
 		},
 		"AudioNode" : {
+			"inherits" : "EventEmitter",
 			"properties" : {
 				"-context" : "obj",
 				"-numberOfInputs" : "uint32",
@@ -121,6 +126,7 @@
 			}
 		},
 		"AudioScheduledSourceNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"onended" : "fun"
 			},
@@ -160,6 +166,7 @@
 			}
 		},
 		"BaseAudioContext" : {
+			"inherits" : "EventEmitter",
 			"properties" : {
 				"-destination" : "obj",
 				"-currentTime" : "double",
@@ -194,6 +201,7 @@
 			}
 		},
 		"BiquadFilterNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"type" : "utf8",
 				"-frequency" : "obj",
@@ -206,26 +214,32 @@
 			}
 		},
 		"ChannelMergerNode" : {
+			"inherits" : "AudioNode"
 		},
 		"ChannelSplitterNode" : {
+			"inherits" : "AudioNode"
 		},
 		"ConstantSourceNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-offset" : "obj"
 			}
 		},
 		"ConvolverNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"buffer" : "obj",
 				"normalize" : "bool"
 			}
 		},
 		"DelayNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-delayTime" : "obj"
 			}
 		},
 		"DynamicsCompressorNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-threshold" : "obj",
 				"-knee" : "obj",
@@ -236,26 +250,31 @@
 			}
 		},
 		"GainNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-gain" : "obj"
 			}
 		},
 		"IIRFilterNode" : {
+			"inherits" : "AudioNode",
 			"methods" : {
 				"getFrequencyResponse" : { "frequencyHz" : "obj", "magResponse" : "obj", "phaseResponse" : "obj" }
 			}
 		},
 		"MediaElementAudioSourceNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-mediaElement" : "obj"
 			}
 		},
 		"MediaStreamAudioDestinationNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-stream" : "obj"
 			}
 		},
 		"MediaStreamAudioSourceNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-mediaStream" : "obj"
 			}
@@ -266,6 +285,7 @@
 			}
 		},
 		"OfflineAudioContext" : {
+			"inherits" : "BaseAudioContext",
 			"properties" : {
 				"oncomplete" : "fun",
 				"-length" : "uint32"
@@ -276,6 +296,7 @@
 			}
 		},
 		"OscillatorNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"type" : "utf8",
 				"-frequency" : "obj",
@@ -286,6 +307,7 @@
 			}
 		},
 		"PannerNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"panningModel" : "utf8",
 				"-positionX" : "obj",
@@ -310,17 +332,20 @@
 		"PeriodicWave" : {
 		},
 		"ScriptProcessorNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"onaudioprocess" : "fun",
 				"-bufferSize" : "int32"
 			}
 		},
 		"StereoPannerNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"-pan" : "obj"
 			}
 		},
 		"WaveShaperNode" : {
+			"inherits" : "AudioNode",
 			"properties" : {
 				"curve" : "obj",
 				"oversample" : "utf8"

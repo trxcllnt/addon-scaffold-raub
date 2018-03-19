@@ -3,10 +3,23 @@ module.exports = opts => `\
 #define _${opts.upper}_HPP_
 
 
-#include <${ opts.isEmitter ? 'event-emitter' : 'addon-tools' }.hpp>
+#include <addon-tools.hpp>
 
 
-class ${opts.name} : public ${ opts.isEmitter ? 'EventEmitter' : 'Nan::ObjectWrap' } {
+class ${opts.name} : public Nan::ObjectWrap {
+	${opts.children.length === 0 ? '' : `
+	${opts.children.map(c => `friend class ${c.name};`).join('\n\t')}
+	`}
+// Methods and props
+private:
+	
+	${opts.methods.map(m => `static NAN_METHOD(${m.name});`).join('\n\t')}
+	${opts.properties.map(p => `
+	static NAN_GETTER(${p.name}Getter);${p.readonly ? '' : `
+	static NAN_SETTER(${p.name}Setter);`}
+	`).join('')}
+	
+	${opts.properties.map(p => `${p.ctype} _${p.name};`).join('\n\t')}
 	
 // Public V8 init
 public:
@@ -14,52 +27,23 @@ public:
 	static void init(v8::Local<v8::Object> target);
 	
 	
-// Public C++ methods: in-engine calls
-public:
-	
-	
-// Protected C++ methods: implementing JS calls
-protected:
+// System methods and props for ObjectWrap
+private:
 	
 	${opts.name}();
 	virtual ~${opts.name}();
 	
-	
-// JS methods and props
-protected:
-	
 	static NAN_METHOD(newCtor);
 	
-	static NAN_METHOD(destroy);
-	
-	${opts.methods.map(m => `static NAN_METHOD(${m.name});`).join('\n\t')}
-	
-	
-	static NAN_GETTER(isDestroyedGetter);
-	
-	${opts.properties.map(p => `
-	static NAN_GETTER(${p.name}Getter);${p.readonly ? '' : `
-	static NAN_SETTER(${p.name}Setter);`}
-	`).join('\n')}
-	
-// Actual destruction-handler
-private:
-	
-	void _destroy();
-	
-	
-// Stored JS constructor and helpers
-private:
-	
+	static Nan::Persistent<v8::FunctionTemplate> _protorype; // for inheritance
 	static Nan::Persistent<v8::Function> _constructor;
 	
-	
-// This-state storage
-private:
-	
-	bool _isDestroyed;
-	
-	${opts.properties.map(p => `${p.ctype} _${p.name};`).join('\n\t')}
+	${ opts.inherits ? '' : `\
+	static NAN_METHOD(destroy);
+	static NAN_GETTER(isDestroyedGetter);
+	void _destroy();
+	bool _isDestroyed;`
+	}
 	
 };
 
