@@ -124,6 +124,14 @@ module.exports = async (json, opts) => {
 		}
 		
 	});
+	classList.forEach(c => {
+		c.hasEmitter = (function _re(next) {
+			if ( ! next.inherits ) {
+				return false;
+			}
+			return next.inherits.name === 'EventEmitter' ? true : _re(next.inherits);
+		})(c);
+	});
 	
 	
 	opts = { ...opts, classList };
