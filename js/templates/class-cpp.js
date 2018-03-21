@@ -28,7 +28,7 @@ using namespace std;
 
 // ------ Constructor and Destructor
 
-${opts.name}::${opts.name}() {
+${opts.name}::${opts.name}()${ opts.inherits ? ` : ${opts.inherits.name}()` : '' } {
 	
 	_isDestroyed = false;
 	
@@ -45,7 +45,7 @@ ${opts.name}::~${opts.name}() {
 void ${opts.name}::_destroy() { DES_CHECK;
 	
 	_isDestroyed = true;
-	
+	${ opts.inherits ? `\n\t${opts.inherits.name}::_destroy();\n\t` : '' }
 }
 
 

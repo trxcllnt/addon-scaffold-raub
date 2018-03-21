@@ -9,7 +9,7 @@ ${ opts.inherits && opts.inherits.name === 'EventEmitter' ?
 }
 
 class ${opts.name} : public ${(opts.inherits ? opts.inherits.name : 'Nan::ObjectWrap')} {
-
+	
 public:
 	
 	// Public V8 init
