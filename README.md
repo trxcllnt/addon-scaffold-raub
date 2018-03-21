@@ -17,6 +17,7 @@ it locally.
 ## Usage
 
 `addon-scaffold description.json` - scaffolds into the current directory.
+
 `addon-scaffold description` - file extension is optional.
 
 
@@ -42,13 +43,20 @@ for the addon.
 ```
 	"classes" : {
 		"Class1" : {
-			"isEmitter" : true,
-			"properties" : { "k1": "bool", "k2": "fun", "k3": "uint32" }
+			"inherits" : "EventEmitter",
+			"properties" : {
+				"k1": "bool",
+				"-k2": "fun",
+				"-k3": "uint32"
+			}
 		},
 		"Class2" : {
 			"methods" : {
 				"f1" : { "p1": "int32", "p2": "utf8", "p3": "float", "p4": "obj" }
 			}
+		},
+		"Class3" : {
+			"inherits" : "Class1",
 		}
 	}
 ```
@@ -56,22 +64,23 @@ for the addon.
 Here the keys of `"classes"` object are the names of the classes to be generated.
 Each class has a set of **optional** arguments:
 
-* `"isEmitter"` - whether this class is able to emit events.
+* `"inherits"` - a string containing parent class name:
+	* could be one of classes defined in this JSON
+	* could be `EventEmitter` (C++ impl, imported from `addon-tools-raub`)
 * `"methods"` - a nested object with per-method definitions:
 	* key - method name,
 	* value - a nested object with per-parameter definitions:
 		* key - parameter name,
 		* value - parameter type.
 * `"properties"` - a nested object with per-property definitions:
-	* key - property name,
+	* key - property name, it can be prepended with `-` to make it **read-only**
 	* value - property type.
 
-By default, all properties are read-write, and all method parameters are required.
-
 Available types are:
+
+* `bool` - boolean.
 * `utf8` - unicode string.
 * `int32` - integer.
-* `bool` - boolean.
 * `uint32` - unsigned integer.
 * `offs` - pointer-size integer (int64 for x64).
 * `double` - double precision float.
@@ -79,5 +88,4 @@ Available types are:
 * `ext` - external pointer.
 * `fun` - function.
 * `obj` - object.
-* `arrv` - typed array.
 

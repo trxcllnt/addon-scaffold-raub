@@ -1,11 +1,8 @@
 module.exports = opts => `\
 #include <cstdlib>
-#include <iostream>
-${ opts.inherits && opts.inherits.name === 'EventEmitter' ?
-	'\n#include <event-emitter.hpp>\n'
-	:
-	(opts.inherits ? `\n#include "${opts.inherits.lower}.hpp"\n` : '')
-}
+//#include <iostream> // -> std::cout << "..." << std::endl;
+
+
 #include "${opts.lower}.hpp"
 
 
@@ -19,16 +16,8 @@ using namespace std;
 #define THIS_${opts.upper}                                                    \\
 	${opts.name} *${opts.inst} = ObjectWrap::Unwrap<${opts.name}>(info.This());
 
-${ opts.inherits ? `\
-#define THIS_${opts.inherits.upper}                                                    \\
-	${opts.inherits.name} *${opts.inherits.inst} = ObjectWrap::Unwrap<${opts.inherits.name}>(info.This());` : ''
-}
-
 #define THIS_CHECK                                                            \\
 	if (${opts.inst}->_isDestroyed) return;
-
-#define DES_CHECK                                                             \\
-	if (_isDestroyed) return;
 
 #define CACHE_CAS(CACHE, V)                                                   \\
 	if (${opts.inst}->CACHE == V) {                                           \\
@@ -37,11 +26,34 @@ ${ opts.inherits ? `\
 	${opts.inst}->CACHE = V;
 
 
+// ------ Constructor and Destructor
+
+${opts.name}::${opts.name}() {
+	
+	_isDestroyed = false;
+	
+}
+
+
+${opts.name}::~${opts.name}() {
+	
+	_destroy();
+	
+}
+
+
+void ${opts.name}::_destroy() { DES_CHECK;
+	
+	_isDestroyed = true;
+	
+}
+
+
 // ------ Methods and props
 
 ${opts.methods.map(m => `\
 
-NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
+NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
 	
 	${m.params.map((p, i) => `REQ_${p.mtype}_ARG(${i}, ${p.name});`).join('\n\t')}
 	
@@ -52,37 +64,35 @@ NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;${opts.inhe
 
 ${opts.properties.map(p => `\
 
-NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
+NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
 	
 	RET_VALUE(JS_${p.mtype}(${opts.inst}->_${p.name}));
 	
 }
 ${p.readonly ? '' : `
-NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
+NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETTER_${p.mtype}_ARG;
 	
 	${ p.toV8 ? p.toV8(opts.inst, p.name) : `CACHE_CAS(_${p.name}, v);` }
 	
 	// TODO: may be additional actions on change?
-	${ opts.isEmitter ? `\n\t${opts.inst}->emit("${p.name}", 1, &value);\n\t` : ''}
+	${ opts.hasEmitter ? `\n\t${opts.inst}->emit("${p.name}", 1, &value);\n\t` : ''}
 }`}
 `).join('\n')}
 
 
 // ------ System methods and props for ObjectWrap
 
-Nan::Persistent<v8::FunctionTemplate> ${opts.name}::_protorype;
-Nan::Persistent<v8::Function> ${opts.name}::_constructor;
+Nan::Persistent<v8::FunctionTemplate> ${opts.name}::_proto${opts.name};
+Nan::Persistent<v8::Function> ${opts.name}::_ctor${opts.name};
 
 
 void ${opts.name}::init(Local<Object> target) {
 	
 	Local<FunctionTemplate> proto = Nan::New<FunctionTemplate>(newCtor);
-	
-	${ opts.inherits ? `// class ${opts.name} inherits ${opts.inherits.name}
-	Local<FunctionTemplate> parent = Nan::New(${opts.inherits.name}::_protorype);
-	proto->Inherit(parent);` : ''
+	${ opts.inherits ? `\n\t// class ${opts.name} inherits ${opts.inherits.name}
+	Local<FunctionTemplate> parent = Nan::New(${opts.inherits.name}::_proto${opts.inherits.name});
+	proto->Inherit(parent);\n\t` : ''
 	}
-	
 	proto->InstanceTemplate()->SetInternalFieldCount(1);
 	proto->SetClassName(JS_STR("${opts.name}"));
 	
@@ -103,8 +113,8 @@ void ${opts.name}::init(Local<Object> target) {
 	
 	Local<Function> ctor = Nan::GetFunction(proto).ToLocalChecked();
 	
-	_protorype.Reset(proto);
-	_constructor.Reset(ctor);
+	_proto${opts.name}.Reset(proto);
+	_ctor${opts.name}.Reset(ctor);
 	
 	Nan::Set(target, JS_STR("${opts.name}"), ctor);
 	
@@ -113,10 +123,9 @@ void ${opts.name}::init(Local<Object> target) {
 
 
 NAN_METHOD(${opts.name}::newCtor) {
-	${ opts.inherits ? `\n\t// Call super()
-	v8::Local<v8::Function> superCtor = Nan::New(${opts.inherits.name}::_constructor);
-	superCtor->Call(info.This(), 0, nullptr);\n\t` : ''
-	}
+	
+	CTOR_CHECK("${opts.name}");
+	
 	${opts.name} *${opts.inst} = new ${opts.name}();
 	${opts.inst}->Wrap(info.This());
 	
@@ -125,25 +134,8 @@ NAN_METHOD(${opts.name}::newCtor) {
 }
 
 
-${opts.name}::${opts.name}() {
-	${ opts.inherits ? '' : `\n\t_isDestroyed = false;\n\t` }
-}
-
-
-${opts.name}::~${opts.name}() {
-	${ opts.inherits ? '' : `\n\t_destroy();\n\t` }
-}
-
-
-void ${opts.name}::_destroy() { DES_CHECK;
+NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;
 	
-	_isDestroyed = true;
-	
-}
-
-
-NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;${opts.inherits ? `THIS_${opts.inherits.upper};` : ''}
-	${opts.inherits ? `\n\t${opts.inherits.inst}->_destroy();\n\t` : ''}
 	${opts.inst}->_destroy();
 	
 }
