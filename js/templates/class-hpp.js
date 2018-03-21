@@ -18,7 +18,7 @@ public:
 	void _destroy();
 	
 	
-// Methods and props
+// Methods and props, available for children
 protected:
 	
 	${opts.name}();
@@ -27,8 +27,12 @@ protected:
 	static Nan::Persistent<v8::FunctionTemplate> _proto${opts.name}; // for inheritance
 	static Nan::Persistent<v8::Function> _ctor${opts.name};
 	
+	bool _isDestroyed;
 	
-// System methods and props for ObjectWrap
+	${opts.properties.map(p => `${p.ctype} _${p.name};`).join('\n\t')}
+	
+	
+// JS methods and props, available through V8 APIs
 private:
 	
 	static NAN_METHOD(newCtor);
@@ -41,13 +45,6 @@ private:
 	static NAN_GETTER(${p.name}Getter);${p.readonly ? '' : `
 	static NAN_SETTER(${p.name}Setter);`}
 	`).join('')}
-	
-private:
-	
-	bool _isDestroyed;
-	
-	${opts.properties.map(p => `${p.ctype} _${p.name};`).join('\n\t')}
-	
 };
 
 
