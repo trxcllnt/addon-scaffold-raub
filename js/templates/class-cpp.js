@@ -51,19 +51,18 @@ void ${opts.name}::_destroy() { DES_CHECK;
 
 // ------ Methods and props
 
-${opts.methods.map(m => `\
 
+${opts.methods.map(m => `\
 NAN_METHOD(${opts.name}::${m.name}) { THIS_${opts.upper}; THIS_CHECK;
-	
+	${m.params.length === 0 ? '' : `
 	${m.params.map((p, i) => `REQ_${p.mtype}_ARG(${i}, ${p.name});`).join('\n\t')}
-	
+	`}
 	// TODO: do something?
 	
 }
+
 `).join('\n')}
-
 ${opts.properties.map(p => `\
-
 NAN_GETTER(${opts.name}::${p.name}Getter) { THIS_${opts.upper}; THIS_CHECK;
 	
 	RET_VALUE(JS_${p.mtype}(${opts.inst}->_${p.name}));
@@ -76,10 +75,9 @@ NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETT
 	
 	// TODO: may be additional actions on change?
 	${ opts.hasEmitter ? `\n\t${opts.inst}->emit("${p.name}", 1, &value);\n\t` : ''}
-}`}
+}
+`}
 `).join('\n')}
-
-
 // ------ System methods and props for ObjectWrap
 
 Nan::Persistent<v8::FunctionTemplate> ${opts.name}::_proto${opts.name};
