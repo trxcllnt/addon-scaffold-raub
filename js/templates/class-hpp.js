@@ -15,6 +15,10 @@ public:
 	// Public V8 init
 	static void init(v8::Local<v8::Object> target);
 	
+	// Make a new instance from C++ land
+	static v8::Local<v8::Object> getNew();
+	
+	// Destroy an instance from C++ land
 	void _destroy();
 	
 	
@@ -24,7 +28,7 @@ protected:
 	${opts.name}();
 	virtual ~${opts.name}();
 	
-	static Nan::Persistent<v8::FunctionTemplate> _proto${opts.name}; // for inheritance
+	static Nan::Persistent<v8::FunctionTemplate> _proto${opts.name};
 	static Nan::Persistent<v8::Function> _ctor${opts.name};
 	
 	bool _isDestroyed;

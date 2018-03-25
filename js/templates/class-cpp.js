@@ -1,6 +1,6 @@
 module.exports = opts => `\
 #include <cstdlib>
-//#include <iostream> // -> std::cout << "..." << std::endl;
+//#include <iostream> // -> cout << "..." << endl;
 
 
 #include "${opts.lower}.hpp"
@@ -14,7 +14,7 @@ using namespace std;
 // ------ Aux macros
 
 #define THIS_${opts.upper}                                                    \\
-	${opts.name} *${opts.inst} = ObjectWrap::Unwrap<${opts.name}>(info.This());
+	${opts.name} *${opts.inst} = Nan::ObjectWrap::Unwrap<${opts.name}>(info.This());
 
 #define THIS_CHECK                                                            \\
 	if (${opts.inst}->_isDestroyed) return;
@@ -80,8 +80,8 @@ NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETT
 `).join('\n')}
 // ------ System methods and props for ObjectWrap
 
-Nan::Persistent<v8::FunctionTemplate> ${opts.name}::_proto${opts.name};
-Nan::Persistent<v8::Function> ${opts.name}::_ctor${opts.name};
+Nan::Persistent<FunctionTemplate> ${opts.name}::_proto${opts.name};
+Nan::Persistent<Function> ${opts.name}::_ctor${opts.name};
 
 
 void ${opts.name}::init(Local<Object> target) {
@@ -116,6 +116,15 @@ void ${opts.name}::init(Local<Object> target) {
 	
 	Nan::Set(target, JS_STR("${opts.name}"), ctor);
 	
+	
+}
+
+
+Local<Object> ${opts.name}::getNew() {
+	
+	Local<Function> ctor = Nan::New(_ctor${opts.name});
+	// Local<Value> argv[] = { /* arg1, arg2, ... */ };
+	return Nan::NewInstance(ctor, 0/*argc*/, nullptr/*argv*/).ToLocalChecked();
 	
 }
 
