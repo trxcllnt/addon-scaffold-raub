@@ -36,7 +36,7 @@
 			}
 		},
 		"AudioBufferSourceNode" : {
-			"inherits" : "AudioNode",
+			"inherits" : "AudioScheduledSourceNode",
 			"properties" : {
 				"buffer" : "obj",
 				"-playbackRate" : "obj",
@@ -220,7 +220,7 @@
 			"inherits" : "AudioNode"
 		},
 		"ConstantSourceNode" : {
-			"inherits" : "AudioNode",
+			"inherits" : "AudioScheduledSourceNode",
 			"properties" : {
 				"-offset" : "obj"
 			}
@@ -296,7 +296,7 @@
 			}
 		},
 		"OscillatorNode" : {
-			"inherits" : "AudioNode",
+			"inherits" : "AudioScheduledSourceNode",
 			"properties" : {
 				"type" : "utf8",
 				"-frequency" : "obj",

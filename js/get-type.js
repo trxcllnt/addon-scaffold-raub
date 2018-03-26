@@ -50,12 +50,12 @@ const types = {
 		toV8: toStringV8,
 	},
 	fun : {
-		ctype: 'Nan::Persistent<v8::Function>',
+		ctype: 'V8_STORE_FUNC',
 		jtype: 'function',
 		toV8: toPersistentV8,
 	},
 	obj : {
-		ctype: 'Nan::Persistent<v8::Object>',
+		ctype: 'V8_STORE_OBJ',
 		jtype: 'object',
 		toV8: toPersistentV8,
 	},

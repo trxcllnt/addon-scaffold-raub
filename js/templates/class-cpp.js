@@ -80,23 +80,23 @@ NAN_SETTER(${opts.name}::${p.name}Setter) { THIS_${opts.upper}; THIS_CHECK; SETT
 `).join('\n')}
 // ------ System methods and props for ObjectWrap
 
-Nan::Persistent<FunctionTemplate> ${opts.name}::_proto${opts.name};
-Nan::Persistent<Function> ${opts.name}::_ctor${opts.name};
+V8_STORE_FT ${opts.name}::_proto${opts.name};
+V8_STORE_FUNC ${opts.name}::_ctor${opts.name};
 
 
-void ${opts.name}::init(Local<Object> target) {
+void ${opts.name}::init(V8_VAR_OBJ target) {
 	
-	Local<FunctionTemplate> proto = Nan::New<FunctionTemplate>(newCtor);
-	${ opts.inherits ? `\n\t// class ${opts.name} inherits ${opts.inherits.name}
-	Local<FunctionTemplate> parent = Nan::New(${opts.inherits.name}::_proto${opts.inherits.name});
+	V8_VAR_FT proto = Nan::New<FunctionTemplate>(newCtor);
+${ opts.inherits ? `\n\t// class ${opts.name} inherits ${opts.inherits.name}
+	V8_VAR_FT parent = Nan::New(${opts.inherits.name}::_proto${opts.inherits.name});
 	proto->Inherit(parent);\n\t` : ''
-	}
+}
 	proto->InstanceTemplate()->SetInternalFieldCount(1);
 	proto->SetClassName(JS_STR("${opts.name}"));
 	
 	
 	// Accessors
-	Local<ObjectTemplate> obj = proto->PrototypeTemplate();
+	V8_VAR_OT obj = proto->PrototypeTemplate();
 	ACCESSOR_R(obj, isDestroyed);
 	
 	${opts.properties.map(p => `ACCESSOR_R${p.readonly ? '' : 'W'}(obj, ${p.name});`).join('\n\t')}
@@ -109,7 +109,7 @@ void ${opts.name}::init(Local<Object> target) {
 	
 	// -------- static
 	
-	Local<Function> ctor = Nan::GetFunction(proto).ToLocalChecked();
+	V8_VAR_FUNC ctor = Nan::GetFunction(proto).ToLocalChecked();
 	
 	_proto${opts.name}.Reset(proto);
 	_ctor${opts.name}.Reset(ctor);
@@ -120,10 +120,10 @@ void ${opts.name}::init(Local<Object> target) {
 }
 
 
-Local<Object> ${opts.name}::getNew() {
+V8_VAR_OBJ ${opts.name}::getNew() {
 	
-	Local<Function> ctor = Nan::New(_ctor${opts.name});
-	// Local<Value> argv[] = { /* arg1, arg2, ... */ };
+	V8_VAR_FUNC ctor = Nan::New(_ctor${opts.name});
+	// V8_VAR_VAL argv[] = { /* arg1, arg2, ... */ };
 	return Nan::NewInstance(ctor, 0/*argc*/, nullptr/*argv*/).ToLocalChecked();
 	
 }

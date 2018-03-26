@@ -1,6 +1,6 @@
 module.exports = opts => `\
 #include <cstdlib>
-
+${opts.hasEmitter ? '\n#include <event-emitter.hpp>\n' : ''}
 ${opts.classList.map(c => `#include "${c.lower}.hpp"`).join('\n')}
 
 
@@ -13,7 +13,7 @@ extern "C" {
 
 
 void init(Local<Object> target) {
-	
+	${opts.hasEmitter ? '\n\tEventEmitter::init(target);\n\t' : ''}
 	${opts.classList.map(c => `${c.name}::init(target);`).join('\n\t')}
 	
 }

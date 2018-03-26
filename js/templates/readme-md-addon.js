@@ -24,7 +24,7 @@ ${opts.classList.map(c => `
 
 ---
 
-### class ${c.name}
+### class ${c.name}${(opts.inherits ? ` : ${opts.inherits.name}` : '')}
 
 TODO(description)
 
@@ -40,15 +40,23 @@ Constructor:
 
 Properties:
 * \`get bool isDestroyed\` - if \`destroy()\` was called on this instance.
-${c.properties.map(p => `* \`get${p.readonly? '' : '/set'} ${p.jtype} ${p.name}\` - TODO(description).`).join('\n')}
+${
+	c.properties.map(
+		p => `* \`get${p.readonly ? '' : '/set'} ${p.jtype} ${p.name}\` - TODO(description).`
+	).join('\n')
+}
 
 
 Methods:
-* \`void destroy()\` - destroys the instance${c.isEmitter ? ', `\'destroy\'` event is emitted' : ''}.
-${c.methods.map(m => `* \`void ${m.name}(${m.params.map(p => `${p.jtype} ${p.name}`).join(', ')})\` - TODO(description).`).join('\n')}
+* \`void destroy()\` - destroys the instance${c.hasEmitter ? ', `\'destroy\'` event is emitted' : ''}.
+${
+	c.methods.map(m => `* \`void ${m.name}(${
+		m.params.map(p => `${p.jtype} ${p.name}`).join(', ')
+	})\` - TODO(description).`).join('\n')
+}
 
 
-${c.isEmitter ? `\
+${c.hasEmitter ? `\
 Events:
 * \`'destroy' <>\` - emitted when the instance was destroyed.
 ${c.properties.map(p => `* \`'${p.name}' <${p.jtype}>\` - emitted when the property was changed.`).join('\n')}

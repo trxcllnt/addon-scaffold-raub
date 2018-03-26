@@ -9,6 +9,8 @@ const getType = require('./get-type');
 const tmpBindingGyp  = require('./templates/binding-gyp-addon');
 const tmpPackageJson = require('./templates/package-json-addon');
 const tmpReadmeMd    = require('./templates/readme-md-addon');
+const tmpEslintrc    = require('./templates/eslintrc');
+const tmpCpplintCfg  = require('./templates/cpplint-cfg');
 const tmpIndexJs     = require('./templates/index-js-addon');
 const tmpCoreJs      = require('./templates/core-js');
 
@@ -136,6 +138,8 @@ module.exports = async (json, opts) => {
 	
 	opts = { ...opts, classList };
 	
+	opts.hasEmitter = classList.some(c => c.hasEmitter);
+	
 	
 	for (const nested of dirs) {
 		await mkdir(`${opts.dir}/${nested}`);
@@ -147,6 +151,8 @@ module.exports = async (json, opts) => {
 		[`${opts.dir}/binding.gyp`]  : tmpBindingGyp,
 		[`${opts.dir}/package.json`] : tmpPackageJson,
 		[`${opts.dir}/README.md`]    : tmpReadmeMd,
+		[`${opts.dir}/.eslintrc`]    : tmpEslintrc,
+		[`${opts.dir}/CPPLINT.cfg`]  : tmpCpplintCfg,
 		[`${opts.dir}/index.js`]     : tmpIndexJs,
 		[`${opts.dir}/core.js`]      : tmpCoreJs,
 		

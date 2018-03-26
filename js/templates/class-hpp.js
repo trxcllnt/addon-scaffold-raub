@@ -2,10 +2,13 @@ module.exports = opts => `\
 #ifndef _${opts.upper}_HPP_
 #define _${opts.upper}_HPP_
 
-${ opts.inherits && opts.inherits.name === 'EventEmitter' ?
-	'\n#include <event-emitter.hpp>\n'
-	:
-	`\n#include <addon-tools.hpp>\n${(opts.inherits ? `\n#include "${opts.inherits.lower}.hpp"\n` : '')}`
+${
+	opts.inherits && opts.inherits.name === 'EventEmitter' ?
+		'\n#include <event-emitter.hpp>\n'
+		:
+		`\n#include <addon-tools.hpp>\n${
+			(opts.inherits ? `\n#include "${opts.inherits.lower}.hpp"\n` : '')
+		}`
 }
 
 class ${opts.name} : public ${(opts.inherits ? opts.inherits.name : 'Nan::ObjectWrap')} {
@@ -13,10 +16,10 @@ class ${opts.name} : public ${(opts.inherits ? opts.inherits.name : 'Nan::Object
 public:
 	
 	// Public V8 init
-	static void init(v8::Local<v8::Object> target);
+	static void init(V8_VAR_OBJ target);
 	
 	// Make a new instance from C++ land
-	static v8::Local<v8::Object> getNew();
+	static V8_VAR_OBJ getNew();
 	
 	// Destroy an instance from C++ land
 	void _destroy();
@@ -28,8 +31,8 @@ protected:
 	${opts.name}();
 	virtual ~${opts.name}();
 	
-	static Nan::Persistent<v8::FunctionTemplate> _proto${opts.name};
-	static Nan::Persistent<v8::Function> _ctor${opts.name};
+	static V8_STORE_FT _proto${opts.name};
+	static V8_STORE_FUNC _ctor${opts.name};
 	
 	bool _isDestroyed;
 	

@@ -13,4 +13,6 @@ binary
 examples
 .gitignore
 test
+.eslintrc
+CPPLINT.cfg
 `;
