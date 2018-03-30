@@ -62,14 +62,14 @@ module.exports = async (json, opts) => {
 			
 			// lower-case-notation-for-file-names
 			const lower = name.replace(
-				/[A-Z]+[A-Z]/g, x => `${x[0]}${x.slice(1, -1).toLowerCase()}${x[x.length-1]}`
+				/[A-Z]+[A-Z]/g, x => `${x[0]}${x.slice(1, -1).toLowerCase()}${x[x.length - 1]}`
 			).replace(
 				/^./, x => x.toLowerCase()
 			).replace(
 				/[a-z][A-Z]/g, x => `${x[0].toLowerCase()}-${x[1].toLowerCase()}`
 			);
 			
-			// UPPER_CASE_NOTATION_FOR_MACROS 
+			// UPPER_CASE_NOTATION_FOR_MACROS
 			const upper = lower.replace(/-/g, '_').toUpperCase();
 			
 			
@@ -78,7 +78,7 @@ module.exports = async (json, opts) => {
 			const noMethods = checkObjectKey(value, 'methods');
 			
 			const methods = noMethods ? [] : Object.entries(value.methods).map(
-				(pair) => {
+				pair => {
 					
 					const [name, params] = pair;
 					const noParams = checkObjectKey(pair, 1);
@@ -127,10 +127,12 @@ module.exports = async (json, opts) => {
 		
 	});
 	classList.forEach(c => {
+		c.chain = [];
 		c.hasEmitter = (function _re(next) {
 			if ( ! next.inherits ) {
 				return false;
 			}
+			c.chain.push(next.inherits);
 			return next.inherits.name === 'EventEmitter' ? true : _re(next.inherits);
 		})(c);
 	});

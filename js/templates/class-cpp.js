@@ -120,6 +120,11 @@ ${ opts.inherits ? `\n\t// class ${opts.name} inherits ${opts.inherits.name}
 }
 
 
+bool ${opts.name}::is${opts.name}(V8_VAR_OBJ obj) {
+	return Nan::New(_proto${opts.name})->HasInstance(obj);
+}
+
+
 V8_VAR_OBJ ${opts.name}::getNew() {
 	
 	V8_VAR_FUNC ctor = Nan::New(_ctor${opts.name});

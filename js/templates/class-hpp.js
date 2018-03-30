@@ -18,6 +18,8 @@ public:
 	// Public V8 init
 	static void init(V8_VAR_OBJ target);
 	
+	static bool is${opts.name}(V8_VAR_OBJ obj);
+	
 	// Make a new instance from C++ land
 	static V8_VAR_OBJ getNew();
 	
