@@ -25,7 +25,7 @@ module.exports = opts => `\
 		"url": "https://github.com/${opts.gitid}/node-deps-${opts.lower}"
 	},
 	"dependencies": {
-		"addon-tools-raub": "0.1.7"
+		"addon-tools-raub": "0.1.8"
 	}
 }
 `;
