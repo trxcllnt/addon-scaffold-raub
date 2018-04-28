@@ -4,7 +4,7 @@
 	"desc" : "Web Audio Api implementation for Node.js",
 	"type" : "addon",
 	"author" : "Luis Blanco",
-	"email" : "raubtierxxx@gmail.com",
+	"email" : "luisblanco1337@gmail.com",
 	"classes" : {
 		"AnalyserNode" : {
 			"inherits" : "AudioNode",

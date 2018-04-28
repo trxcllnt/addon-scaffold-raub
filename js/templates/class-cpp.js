@@ -28,7 +28,8 @@ using namespace std;
 
 // ------ Constructor and Destructor
 
-${opts.name}::${opts.name}()${ opts.inherits ? ` : ${opts.inherits.name}()` : '' } {
+${opts.name}::${opts.name}()${ opts.inherits ? ` :
+${opts.inherits.name}()` : '' } {
 	
 	_isDestroyed = false;
 	
@@ -147,7 +148,7 @@ NAN_METHOD(${opts.name}::newCtor) {
 
 
 NAN_METHOD(${opts.name}::destroy) { THIS_${opts.upper}; THIS_CHECK;
-	
+	${ opts.hasEmitter ? `\n\t${opts.inst}->emit("destroy");\n\t` : ''}
 	${opts.inst}->_destroy();
 	
 }

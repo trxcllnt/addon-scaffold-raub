@@ -10,9 +10,10 @@ ${opts.desc}
 npm i -s ${opts.lower}-${opts.gitid}
 \`\`\`
 
-Note: as this is a compiled addon, compilation tools must be in place on your system.
+> Note: compilation tools must be in place on your system.
 Such as MSVS13 for Windows, where **ADMIN PRIVELEGED**
 \`npm i -g windows-build-tools\` most probably helps.
+Also Windows needs **vcredist 2013** to be installed.
 
 
 ## Usage

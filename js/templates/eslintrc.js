@@ -49,9 +49,7 @@ module.exports = () => `\
 		"no-multiple-empty-lines": ["error", { "max": 3, "maxEOF": 1, "maxBOF": 1 }],
 		"keyword-spacing": ["error", { "before": true, "after": true }],
 		"space-before-blocks": ["error"],
-		"space-before-function-paren": [
-			"error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}
-		],
+		"space-before-function-paren": ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}],
 		"space-infix-ops": ["error"],
 		"space-unary-ops": [
 			"error", {
@@ -74,11 +72,11 @@ module.exports = () => `\
 			"error",
 			{
 				"selector": "LabeledStatement",
-				"message": "Labels are a form of GOTO which is hard to maintain and understand."
+				"message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
 			},
 			{
 				"selector": "WithStatement",
-				"message": "'with' is disallowed in strict mode."
+				"message": "\`with\` is disallowed in strict mode because it makes code impossible to predict and optimize."
 			}
 		],
 		"no-mixed-operators": [0],

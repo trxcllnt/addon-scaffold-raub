@@ -1,37 +1,31 @@
 module.exports = opts => `\
 {
-	"name": "deps-${opts.lower}-${opts.gitid}",
 	"author": "${opts.author} <${opts.email}>",
-	"description": "${opts.desc}",
+	"name": "deps-${opts.lower}-${opts.gitid}",
 	"version": "0.0.1",
+	"description": "${opts.desc}",
+	"license": "MIT",
 	"main": "index.js",
 	"keywords": [
-		"${opts.lower}",
-		"binaries",
-		"deps",
 		"dependency",
-		"addon",
-		"compile",
-		"lib",
-		"dll",
-		"so",
-		"windows",
-		"mac",
-		"linux"
+		"${opts.lower}"
 	],
+	"engines": {
+		"node": ">=8.11.1",
+		"npm": ">=5.6.0"
+	},
 	"maintainers": [
 		{
 			"name": "${opts.author}",
 			"email": "${opts.email}"
 		}
 	],
-	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/${opts.gitid}/node-deps-${opts.lower}"
 	},
 	"dependencies": {
-		"addon-tools-raub": "0.1.5"
+		"addon-tools-raub": "0.1.7"
 	}
 }
 `;

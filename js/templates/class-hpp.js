@@ -15,6 +15,8 @@ class ${opts.name} : public ${(opts.inherits ? opts.inherits.name : 'Nan::Object
 	
 public:
 	
+	~${opts.name}();
+	
 	// Public V8 init
 	static void init(V8_VAR_OBJ target);
 	
@@ -31,7 +33,6 @@ public:
 protected:
 	
 	${opts.name}();
-	virtual ~${opts.name}();
 	
 	static V8_STORE_FT _proto${opts.name};
 	static V8_STORE_FUNC _ctor${opts.name};

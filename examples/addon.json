@@ -4,7 +4,7 @@
 	"desc"    : "Some addon description",
 	"type"    : "addon",
 	"author"  : "Luis Blanco",
-	"email"   : "raubtierxxx@gmail.com",
+	"email"   : "luisblanco1337@gmail.com",
 	"classes" : {
 		"Class1" : {
 			"isEmitter" : true,
