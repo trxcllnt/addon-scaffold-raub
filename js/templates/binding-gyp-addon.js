@@ -91,10 +91,10 @@ module.exports = opts => `\
 						'rm',
 						'<(module_root_dir)/build/Release/obj.target/${opts.lower}/cpp/bindings.o',
 						${
-							opts.classList.map(
-								c => `'<(module_root_dir)/build/Release/obj.target/${opts.lower}/cpp/${c.lower}.o',`
-							).join('\n\t\t\t\t\t\t')
-						}
+	opts.classList.map(
+		c => `'<(module_root_dir)/build/Release/obj.target/${opts.lower}/cpp/${c.lower}.o',`
+	).join('\n\t\t\t\t\t\t')
+}
 						'<(module_root_dir)/build/Release/${opts.lower}.node'
 					] } ],
 					[ 'OS=="win"', { 'action' : [

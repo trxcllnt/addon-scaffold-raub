@@ -18,7 +18,7 @@ const resolved = path.resolve(target).replace(/\\/g, '/');
 const types = ['addon', 'deps'];
 
 
-const getJson = file => {
+const getJson = () => {
 	
 	try {
 		
@@ -40,7 +40,7 @@ const getJson = file => {
 	
 	try {
 		
-		const json = getJson(resolved);
+		const json = getJson();
 		
 		if ( ! json ) {
 			return;

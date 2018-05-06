@@ -1,5 +1,7 @@
 # Addon Scaffold
 
+This is a part of [Node3D](https://github.com/node-3d) project.
+
 
 ## Synopsis
 
@@ -88,4 +90,10 @@ Available types are:
 * `ext` - external pointer.
 * `fun` - function.
 * `obj` - object.
+
+
+## Additional Notes
+
+The [addon-tools-raub](https://github.com/node-3d/addon-tools-raub)
+package is used inside the templates.
 
