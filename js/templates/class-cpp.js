@@ -1,6 +1,5 @@
 module.exports = opts => `\
 #include <cstdlib>
-//#include <iostream> // -> cout << "..." << endl;
 
 
 #include "${opts.lower}.hpp"
