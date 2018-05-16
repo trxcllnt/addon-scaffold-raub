@@ -1,5 +1,5 @@
 {
-	"name" : "WAA",
+	"name" : "Webaudio",
 	"gitid" : "raub",
 	"desc" : "Web Audio Api implementation for Node.js",
 	"type" : "addon",

@@ -6,7 +6,7 @@ module.exports = opts => `\
 
 const { binPath } = require('addon-tools-raub');
 
-const core = require(\`./$\{binPath}/bullet\`);
+const core = require(\`./$\{binPath}/${opts.lower}\`);
 
 
 module.exports = core;

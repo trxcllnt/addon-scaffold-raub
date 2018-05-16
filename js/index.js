@@ -7,8 +7,6 @@ const mkdir = require('./mkdir');
 const write = require('./write');
 
 const tmpLicense   = require('./templates/license');
-const tmpGitignore = require('./templates/gitignore');
-const tmpNpmignore = require('./templates/npmignore');
 
 
 const target = process.argv[process.argv.length - 1].replace(/(\.json)?$/, '.json');
@@ -92,14 +90,12 @@ const getJson = () => {
 			
 		};
 		
-		opts.dir = `node-${opts.lower}`;
+		opts.dir = `${json.type === 'deps' ? 'deps-' : ''}${opts.lower}-${opts.gitid}`;
 		
 		
 		await mkdir(opts.dir);
 		
 		await write(`${opts.dir}/LICENSE`, tmpLicense(opts));
-		await write(`${opts.dir}/.gitignore`, tmpGitignore(opts));
-		await write(`${opts.dir}/.npmignore`, tmpNpmignore(opts));
 		
 		
 		await require(`./${json.type}`)(json, opts);
