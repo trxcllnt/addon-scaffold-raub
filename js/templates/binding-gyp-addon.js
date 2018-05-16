@@ -1,9 +1,10 @@
 module.exports = opts => `\
 {
 	'variables': {
-		'rm'    : '<!(node -e "require(\\'addon-tools-raub\\').rm()")',
-		'cp'    : '<!(node -e "require(\\'addon-tools-raub\\').cp()")',
-		'mkdir' : '<!(node -e "require(\\'addon-tools-raub\\').mkdir()")',
+		'rm'     : '<!(node -e "require(\\'addon-tools-raub\\').rm()")',
+		'cp'     : '<!(node -e "require(\\'addon-tools-raub\\').cp()")',
+		'mkdir'  : '<!(node -e "require(\\'addon-tools-raub\\').mkdir()")',
+		'binary' : '<!(node -e "require(\\'addon-tools-raub\\').bin()")',
 	},
 	'targets': [
 		{
@@ -58,7 +59,7 @@ module.exports = opts => `\
 				'action_name' : 'Directory created.',
 				'inputs'      : [],
 				'outputs'     : ['build'],
-				'action': ['<(mkdir)', '-p', 'binary']
+				'action': ['<(mkdir)', '-p', '<(binary)']
 			}],
 		},
 		{
@@ -69,9 +70,10 @@ module.exports = opts => `\
 				'action_name' : 'Module copied.',
 				'inputs'      : [],
 				'outputs'     : ['binary'],
-				'action'      : ['<(cp)', 'build/Release/${opts.lower}.node', 'binary/${opts.lower}.node'],
+				'action'      : ['<(cp)', 'build/Release/${opts.lower}.node', '<(binary)/${opts.lower}.node'],
 			}],
 		},
+		# Comment below for debugging
 		{
 			'target_name'  : 'remove_extras',
 			'type'         : 'none',

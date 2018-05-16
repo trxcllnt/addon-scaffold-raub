@@ -2,6 +2,13 @@ module.exports = opts => `\
 # ${opts.name} binaries
 
 
+## Synopsis
+
+${opts.desc}
+
+This dependency package is distributing ${opts.name}
+binaries through **NPM** for **Node.js** addons.
+
 * Platforms: win x32/x64, linux x32/x64, mac x64.
 * Libraries: TODO(which).
 * Linking: TODO(<static/dynamic> <dll/lib>-type).

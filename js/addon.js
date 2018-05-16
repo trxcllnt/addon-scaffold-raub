@@ -9,6 +9,8 @@ const getType = require('./get-type');
 const tmpBindingGyp  = require('./templates/binding-gyp-addon');
 const tmpPackageJson = require('./templates/package-json-addon');
 const tmpReadmeMd    = require('./templates/readme-md-addon');
+const tmpNpmignore   = require('./templates/npmignore-addon');
+const tmpGitignore   = require('./templates/gitignore-addon');
 const tmpEslintrc    = require('./templates/eslintrc');
 const tmpCpplintCfg  = require('./templates/cpplint-cfg');
 const tmpIndexJs     = require('./templates/index-js-addon');
@@ -153,6 +155,8 @@ module.exports = async (json, opts) => {
 		[`${opts.dir}/binding.gyp`]  : tmpBindingGyp,
 		[`${opts.dir}/package.json`] : tmpPackageJson,
 		[`${opts.dir}/README.md`]    : tmpReadmeMd,
+		[`${opts.dir}/.npmignore`]   : tmpNpmignore,
+		[`${opts.dir}/.gitignore`]   : tmpGitignore,
 		[`${opts.dir}/.eslintrc`]    : tmpEslintrc,
 		[`${opts.dir}/CPPLINT.cfg`]  : tmpCpplintCfg,
 		[`${opts.dir}/index.js`]     : tmpIndexJs,

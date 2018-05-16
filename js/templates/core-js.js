@@ -2,8 +2,12 @@ module.exports = opts => `\
 'use strict';
 
 // Add deps dll dirs
-require('deps-${opts.lower}-${opts.gitid}');
+// require('deps-${opts.lower}');
+
+const { binPath } = require('addon-tools-raub');
+
+const core = require(\`./$\{binPath}/bullet\`);
 
 
-module.exports = require('./binary/${opts.lower}');
+module.exports = core;
 `;

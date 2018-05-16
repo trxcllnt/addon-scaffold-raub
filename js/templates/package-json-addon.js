@@ -22,10 +22,10 @@ module.exports = opts => `\
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/${opts.gitid}/node-${opts.lower}.git"
+		"url": "https://github.com/${opts.gitid}/${opts.lower}.git"
 	},
 	"dependencies": {
-		"addon-tools-raub": "^1.0.0"
+		"addon-tools-raub": "^2.0.1"
 	}
 }
 `;

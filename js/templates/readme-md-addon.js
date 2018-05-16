@@ -1,5 +1,8 @@
 module.exports = opts => `\
-# ${opts.name}
+# ${opts.name} for Node.js
+
+
+## Synopsis
 
 ${opts.desc}
 

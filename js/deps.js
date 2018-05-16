@@ -6,6 +6,8 @@ const write = require('./write');
 // Addon root files
 const tmpBindingGyp  = require('./templates/binding-gyp-deps');
 const tmpPackageJson = require('./templates/package-json-deps');
+const tmpNpmignore   = require('./templates/npmignore-deps');
+const tmpGitignore   = require('./templates/gitignore-deps');
 const tmpReadmeMd    = require('./templates/readme-md-deps');
 const tmpIndexJs     = require('./templates/index-js-deps');
 
@@ -32,10 +34,12 @@ module.exports = async (json, opts) => {
 		[`${opts.dir}/binding.gyp`]  : tmpBindingGyp,
 		[`${opts.dir}/package.json`] : tmpPackageJson,
 		[`${opts.dir}/README.md`]    : tmpReadmeMd,
+		[`${opts.dir}/.npmignore`]   : tmpNpmignore,
+		[`${opts.dir}/.gitignore`]   : tmpGitignore,
 		[`${opts.dir}/index.js`]     : tmpIndexJs,
 		
-		[`${opts.dir}/examples/.keep`]   : () => '',
-		[`${opts.dir}/test/.keep`]       : () => '',
+		[`${opts.dir}/examples/.keep`] : () => '',
+		[`${opts.dir}/test/.keep`]     : () => '',
 		
 	};
 	
